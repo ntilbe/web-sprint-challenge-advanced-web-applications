@@ -1,6 +1,6 @@
 import React from "react";
-import { render, screen } from "@testing-library/react";
-import BubblePage from "./BubblePage";
+import { render, screen, fireEvent } from "@testing-library/react";
+import Login from "./Login";
 import { axiosWithAuth } from "../utils/axiosWithAuth";
 
 const getColors = () => {
@@ -95,12 +95,20 @@ const mockData = [
 	},
 ];
 
-test("Fetches data and renders the bubbles", async () => {
+test("Renders Login page without error", async () => {
 	// Finish this test
-	const { rerender } = render(<BubblePage colors={[]} />);
+	const { rerender } = render(<Login colors={[]} />);
 
-	rerender(<BubblePage missions={mockData} />);
+	rerender(<Login missions={mockData} />);
 
-	expect(await screen.findByText(/bubbles/i)).toBeInTheDocument();
-	expect(await screen.findByText(/colors/i)).toBeInTheDocument();
+	expect(await screen.findByText(/login/i)).toBeInTheDocument();
+
+	const usernameField = screen.getByPlaceholderText(/username/i);
+	const passwordField = screen.getByPlaceholderText(/password/i);
+
+	fireEvent.change(usernameField, { target: { value: "Lambda School" } });
+	fireEvent.change(passwordField, { target: { value: "i<3Lambd4" } });
+
+	const button = screen.getByRole("button", { name: /log in/i });
+	fireEvent.click(button);
 });
